@@ -1,19 +1,27 @@
 pragma solidity ^0.4.24;
 
-import "./ERC20.sol";
 import "./Ownable.sol";
 import "./SafeMath.sol";
 
-contract Token is Ownable, ERC20 {
+contract Token is Ownable {
     using SafeMath for uint;
 
-    string public symbol = "SCC";
-    string public name = "StartCryptoCoin";
-    uint8 public decimals = 18;
-    uint256 public totalSupply = 1000000000;
+    string public name;
+    string public symbol;
+    uint8 public decimals;
+    uint256 public totalSupply;
 
     mapping (address => uint256) private balances;
     mapping (address => mapping (address => uint256)) private allowed;
+
+    constructor () public {
+        symbol = "SCC";
+        name = "StartCryptoCoin";
+        decimals = 18;
+        totalSupply = 1000000000;
+
+        balances[msg.sender] = totalSupply;
+    }
 
     function transfer(address to, uint256 value) public returns (bool) {
         require(to != address(0), "Invalid address");
@@ -49,6 +57,9 @@ contract Token is Ownable, ERC20 {
         emit Approval(msg.sender, spender, value);
         return true;
     }
+
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+    event Transfer(address indexed from, address indexed to, uint256 value);
 
     function () external payable {
         revert("Not payable");
