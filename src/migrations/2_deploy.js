@@ -1,7 +1,5 @@
-const Gold = artifacts.require('Gold');
-const Silver = artifacts.require('Silver');
+const Token = artifacts.require('Token');
 
 module.exports = async (deployer) => {
-    await deployer.deploy(Gold);
-    await deployer.deploy(Silver);
+    await deployer.deploy(Token);
 };

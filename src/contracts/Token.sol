@@ -3,7 +3,7 @@ pragma solidity ^0.4.24;
 import "./Ownable.sol";
 import "./SafeMath.sol";
 
-contract Sh8pe is Ownable {
+contract Token is Ownable {
     using SafeMath for uint;
 
     string public name;
@@ -32,9 +32,10 @@ contract Sh8pe is Ownable {
         symbol = "SCC";
         name = "StartCryptoCoin";
         decimals = 18;
-        totalSupply = 1000000000;
 
-        balances[msg.sender] = totalSupply;
+        _start = now;
+        _initalSupply = 1000000000;
+        _balances[msg.sender] = Balance(_start, _initalSupply);
     }
 
     function balanceOf(address who) public view returns (uint256) {
@@ -66,7 +67,6 @@ contract Sh8pe is Ownable {
 
         allowed[from][msg.sender] = allowed[from][msg.sender].sub(value);
 
-        //balances[to] = balances[to].add(value);
         _balances[to].timestamp = now;
         _balances[to].amount = _getBalance(to).add(value);
 
