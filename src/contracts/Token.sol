@@ -16,7 +16,7 @@ contract Token is Ownable {
 
     uint256 public rate = 1000;
 
-    uint256 private _start;
+    uint256 public _start;
     uint256 private _initalSupply;
 
     struct Balance {
@@ -82,13 +82,13 @@ contract Token is Ownable {
         return true;
     }
 
-    function calc(uint256 amount, uint256 start) private view returns (uint256) {
-        uint256 deltaTime = now.sub(start);
+    function calc(uint256 amount, uint256 start) public view returns (uint256) {
+        uint256 deltaTime = _start.sub(start);
         return amount.mul(1 + rate * deltaTime);
     }
 
     function _getBalance(address who) private view returns(uint256) {
-        return calc(_balances[who].timestamp, _balances[who].amount);
+        return calc(_balances[who].amount, _balances[who].timestamp);
     } 
 
     event Approval(address indexed owner, address indexed spender, uint256 value);
