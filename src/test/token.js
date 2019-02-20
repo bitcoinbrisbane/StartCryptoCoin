@@ -44,10 +44,11 @@ contract.only("Token", function(accounts) {
     });
     
     it.only("Owner balance should be greater than 1000000000", async function () {
-      await advanceTime(10000);
+      var response = await helper.advanceBlock(10);
+      console.log(response);
 
       const actual = await tokenInstance.balanceOf(OWNER);
-      assert.equal(actual.valueOf(), 1000000000, "Balance should be 1000000000");
+      assert.equal(actual.valueOf(), 1000000000, "Balance should be greater than 1000000000");
     });
   });
 });

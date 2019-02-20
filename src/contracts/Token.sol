@@ -82,8 +82,8 @@ contract Token is Ownable {
         return true;
     }
 
-    function calc(uint256 amount, uint256 start) public view returns (uint256) {
-        uint256 deltaTime = _start.sub(start);
+    function calc(uint256 amount, uint256 to) public view returns (uint256) {
+        uint256 deltaTime = to.sub(_start);
         return amount.mul(1 + rate * deltaTime);
     }
 
