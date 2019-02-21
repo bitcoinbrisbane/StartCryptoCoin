@@ -17,7 +17,8 @@ contract Token is Ownable {
     uint256 public rate = 1000;
 
     uint256 public _start;
-    uint256 private _initalSupply;
+    uint256 private _ownerBalance;
+    uint256 private _nonOwners;
 
     struct Balance {
         uint256 timestamp;
@@ -25,7 +26,9 @@ contract Token is Ownable {
     }
 
     function totalSupply() public view returns(uint256) {
-        return calc(_initalSupply, _start);
+        uint256 accruedTotal = calc(_nonOwners, _start);
+
+        return _ownerBalance.add(accruedTotal);
     }
 
     constructor () public {
@@ -34,26 +37,33 @@ contract Token is Ownable {
         decimals = 18;
 
         _start = now;
-        _initalSupply = 1000000000;
-        _balances[msg.sender] = Balance(_start, _initalSupply);
+        _ownerBalance = 1000000000 * 10 ^ decimals;
     }
 
     function balanceOf(address who) public view returns (uint256) {
-        return _getBalance(who);
+        if (who == owner) {
+            return _ownerBalance;
+        } else {
+            return _getBalance(who);
+        }
     }
 
     function transfer(address to, uint256 value) public returns (bool) {
         require(_getBalance(msg.sender) >= value, "Insufficient balance");
 
-        //uint256 _amount = _getBalance(msg.sender);
+        if (msg.sender == owner) {
+            _ownerBalance = _ownerBalance.add(value);
+        } else {
+            _balances[msg.sender].timestamp = now;
+            _balances[msg.sender].amount = _getBalance(msg.sender).sub(value);
+        }
 
-        _balances[msg.sender].timestamp = now;
-        _balances[msg.sender].amount = _getBalance(msg.sender).sub(value);
-
-        //balances[to] = balances[to].add(value);
-
-        _balances[to].timestamp = now;
-        _balances[to].amount = _getBalance(msg.sender).add(value);
+        if (to == owner) {
+            _ownerBalance = _ownerBalance.add(value);
+        } else {
+            _balances[to].timestamp = now;
+            _balances[to].amount = _getBalance(msg.sender).add(value);
+        }
 
         emit Transfer(msg.sender, to, value);
         return true;
