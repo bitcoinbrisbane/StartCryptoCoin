@@ -6,6 +6,7 @@ advanceTimeAndBlock = async (time) => {
 }
 
 advanceTime = (time) => {
+    console.log("***" + time);
     return new Promise((resolve, reject) => {
         web3.currentProvider.send({
             jsonrpc: "2.0",

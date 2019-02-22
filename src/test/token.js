@@ -8,6 +8,15 @@ contract.only("Token", function(accounts) {
 
   let tokenInstance;
 
+  const jsonrpc = '2.0';
+  const id = 0;
+  const send = (method, params = []) => web3.currentProvider.send({ id, jsonrpc, method, params });
+
+  const timeTravel = async seconds => {
+    await send('evm_increaseTime', [seconds]);
+    await send('evm_mine');
+  }
+
   beforeEach(async function () {
     tokenInstance = await Token.new();
   });
@@ -33,22 +42,21 @@ contract.only("Token", function(accounts) {
       assert.equal(symbol, "SCC", "Symbol should be SCC");
     });
 
-    it("Total supply should be 1000000000", async function () {
+    it("Total supply should be 10000000000000", async function () {
       const actual = await tokenInstance.totalSupply();
-      assert.equal(actual.valueOf(), 1000000000, "Total supply should be 0");
+      assert.equal(Number(actual), Number(10000000000000), "Total supply should be 10000000000000");
     });
 
-    it("Owner balance should be 1000000000", async function () {
+    it("Owner balance should be 10000000000000", async function () {
       const actual = await tokenInstance.balanceOf(OWNER);
-      assert.equal(actual.valueOf(), 1000000000, "Balance should be 1000000000");
+      assert.equal(actual.valueOf(), 10000000000000, "Balance should be 10000000000000");
     });
     
-    it.only("Owner balance should be greater than 1000000000", async function () {
-      var response = await helper.advanceBlock(10);
-      console.log(response);
+    it.only("Owner balance should be greater than 10000000000000", async function () {
+      await advanceTime(10000);
 
-      const actual = await tokenInstance.balanceOf(OWNER);
-      assert.equal(actual.valueOf(), 1000000000, "Balance should be greater than 1000000000");
+      const actual = await tokenInstance.delta();
+      assert.equal(actual.valueOf(), 10000, "Balance should be greater than 10000000000000");
     });
   });
 });

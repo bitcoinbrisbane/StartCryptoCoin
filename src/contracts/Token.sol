@@ -34,10 +34,10 @@ contract Token is Ownable {
     constructor () public {
         symbol = "SCC";
         name = "StartCryptoCoin";
-        decimals = 18;
+        decimals = 4;
 
         _start = now;
-        _ownerBalance = 1000000000 * 10 ^ decimals;
+        _ownerBalance = 1000000000 * uint256(10) ** decimals;
     }
 
     function balanceOf(address who) public view returns (uint256) {
@@ -52,7 +52,7 @@ contract Token is Ownable {
         require(_getBalance(msg.sender) >= value, "Insufficient balance");
 
         if (msg.sender == owner) {
-            _ownerBalance = _ownerBalance.add(value);
+            _ownerBalance = _ownerBalance.sub(value);
         } else {
             _balances[msg.sender].timestamp = now;
             _balances[msg.sender].amount = _getBalance(msg.sender).sub(value);
@@ -70,8 +70,10 @@ contract Token is Ownable {
     }
 
     function transferFrom(address from, address to, uint256 value) public returns (bool) {
-        require(_getBalance(from) >= value && allowed[from][msg.sender] >= value && _getBalance(to) + value >= _getBalance(to), "Insufficient balance");
-
+        require(_getBalance(from) >= value, "Insufficient balance");
+        require(_getBalance(to).add(value) >= _getBalance(to), "Insufficient balance");
+        require(allowed[from][msg.sender] >= value, "Insufficient balance");
+        
         _balances[from].timestamp = now;
         _balances[from].amount = _getBalance(from).sub(value);
 
@@ -92,13 +94,20 @@ contract Token is Ownable {
         return true;
     }
 
+    function delta() public returns (uint256) {
+        return now.sub(_start);
+    }
+
     function calc(uint256 amount, uint256 to) public view returns (uint256) {
-        uint256 deltaTime = to.sub(_start);
-        return amount.mul(1 + rate * deltaTime);
+        return amount.mul(1 + rate * delta());
     }
 
     function _getBalance(address who) private view returns(uint256) {
-        return calc(_balances[who].amount, _balances[who].timestamp);
+        if (who == owner) {
+            return _ownerBalance;
+        } else {
+            return calc(_balances[who].amount, _balances[who].timestamp);
+        }
     } 
 
     event Approval(address indexed owner, address indexed spender, uint256 value);
