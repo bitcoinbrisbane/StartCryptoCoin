@@ -98,8 +98,8 @@ contract Token is Ownable {
         return now.sub(_start);
     }
 
-    function calc(uint256 amount, uint256 to) public view returns (uint256) {
-        return amount.mul(1 + rate * delta());
+    function calc(uint256 amount, uint256 _delta) public view returns (uint256) {
+        return amount.mul(1 + rate * _delta);
     }
 
     function _getBalance(address who) private view returns(uint256) {

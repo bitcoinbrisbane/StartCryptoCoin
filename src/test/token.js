@@ -8,20 +8,21 @@ contract.only("Token", function(accounts) {
 
   let tokenInstance;
 
-  const jsonrpc = '2.0';
-  const id = 0;
-  const send = (method, params = []) => web3.currentProvider.send({ id, jsonrpc, method, params });
-
-  const timeTravel = async seconds => {
-    await send('evm_increaseTime', [seconds]);
-    await send('evm_mine');
-  }
-
   beforeEach(async function () {
     tokenInstance = await Token.new();
   });
 
   describe("Interest tests", () => {
+    it("Should calc rate", async function () {
+      const start = await tokenInstance._start();
+      console.log(Number(start));
+
+      const actual = await tokenInstance.calc(100, start);
+      console.log(Number(actual));
+
+      assert.equal(actual.valueOf(), 100, "Should still be 100");
+    });
+
     it("Should not have any interest", async function () {
       const start = await tokenInstance._start();
       console.log(Number(start));
