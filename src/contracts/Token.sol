@@ -10,11 +10,10 @@ contract Token is Ownable {
     string public symbol;
     uint8 public decimals;
 
-    //mapping (address => uint256) balances;
     mapping (address => Balance) _balances;
     mapping (address => mapping (address => uint256)) allowed;
 
-    uint256 public rate = 1000;
+    uint256 public rate = 462960; //per second
 
     uint256 public _start;
     uint256 private _ownerBalance;
@@ -34,7 +33,7 @@ contract Token is Ownable {
     constructor () public {
         symbol = "SCC";
         name = "StartCryptoCoin";
-        decimals = 4;
+        decimals = 10;
 
         _start = now;
         _ownerBalance = 1000000000 * uint256(10) ** decimals;

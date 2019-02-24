@@ -13,14 +13,21 @@ contract.only("Token", function(accounts) {
   });
 
   describe("Interest tests", () => {
-    it("Should calc rate", async function () {
+    it.only("Should calc rate", async function () {
       const start = await tokenInstance._start();
       console.log(Number(start));
 
-      const actual = await tokenInstance.calc(100, start);
+      const actual = await tokenInstance.calc(100, 0);
       console.log(Number(actual));
 
       assert.equal(actual.valueOf(), 100, "Should still be 100");
+    });
+
+    it.only("Should calc rate 2", async function () {
+      const actual = await tokenInstance.calc(100, 1);
+      console.log(Number(actual));
+
+      assert.equal(actual.valueOf(), 101, "Should still be 101");
     });
 
     it("Should not have any interest", async function () {
@@ -43,9 +50,9 @@ contract.only("Token", function(accounts) {
       assert.equal(symbol, "SCC", "Symbol should be SCC");
     });
 
-    it("Total supply should be 10000000000000", async function () {
+    it.only("Total supply should be 10000000000000000000", async function () {
       const actual = await tokenInstance.totalSupply();
-      assert.equal(Number(actual), Number(10000000000000), "Total supply should be 10000000000000");
+      assert.equal(Number(actual), Number(10000000000000000000), "Total supply should be 10000000000000000000");
     });
 
     it("Owner balance should be 10000000000000", async function () {
@@ -53,9 +60,7 @@ contract.only("Token", function(accounts) {
       assert.equal(actual.valueOf(), 10000000000000, "Balance should be 10000000000000");
     });
     
-    it.only("Owner balance should be greater than 10000000000000", async function () {
-      await advanceTime(10000);
-
+    it.skip("Owner balance should be greater than 10000000000000", async function () {
       const actual = await tokenInstance.delta();
       assert.equal(actual.valueOf(), 10000, "Balance should be greater than 10000000000000");
     });
