@@ -94,7 +94,7 @@ contract Token is Ownable {
         return true;
     }
 
-    function delta(uint256 from) public returns (uint256) {
+    function delta(uint256 from) public view returns (uint256) {
         return now.sub(from);
     }
 
