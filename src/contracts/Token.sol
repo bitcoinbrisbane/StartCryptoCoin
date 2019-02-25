@@ -14,7 +14,8 @@ contract Token is Ownable {
     mapping (address => mapping (address => uint256)) allowed;
 
     //0.12 * 10 ** 4 (decimals)
-    uint256 public rate = 1200; //12% pa
+    //uint256 public rate = 1200; //12% pa
+    uint256 public rate = 16; //per day
 
     uint256 public _start;
     uint256 private _ownerBalance;
@@ -93,30 +94,23 @@ contract Token is Ownable {
         return true;
     }
 
-    function delta() public returns (uint256) {
-        return now.sub(_start);
+    function delta(uint256 from) public returns (uint256) {
+        return now.sub(from);
     }
 
     function calc(uint256 amount, uint256 _days) public view returns (uint256) {
-        
-        // uint y = rate.div(365 * 24 * 60 * 60).mul(_delta);
-        // uint256 x = amount.mul(1 + y);
-
-        // return x;
-
-        //uint256 _rate = rate * 100;
-
-        uint256 t = 365 * uint256(10) ** decimals;
-        t = t.div(_days * uint256(10) ** decimals);
-        
-        return amount * (1 + t * rate);
+        //5% per 30days = 0.0016
+        return amount.mul(rate * _days);
     }
 
     function _getBalance(address who) private view returns(uint256) {
         if (who == owner) {
             return _ownerBalance;
         } else {
-            return calc(_balances[who].amount, _balances[who].timestamp);
+            uint256 _delta = delta(_balances[who].timestamp);
+            _delta = _delta.div(24 * 60 * 60);
+
+            return calc(_balances[who].amount, _delta);
         }
     } 
 
