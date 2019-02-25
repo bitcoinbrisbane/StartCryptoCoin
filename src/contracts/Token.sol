@@ -13,7 +13,8 @@ contract Token is Ownable {
     mapping (address => Balance) _balances;
     mapping (address => mapping (address => uint256)) allowed;
 
-    uint256 public rate = 462960; //per second
+    //0.12 * 10 ** 4 (decimals)
+    uint256 public rate = 1200; //12% pa
 
     uint256 public _start;
     uint256 private _ownerBalance;
@@ -26,14 +27,13 @@ contract Token is Ownable {
 
     function totalSupply() public view returns(uint256) {
         uint256 accruedTotal = calc(_nonOwners, _start);
-
         return _ownerBalance.add(accruedTotal);
     }
 
     constructor () public {
         symbol = "SCC";
         name = "StartCryptoCoin";
-        decimals = 10;
+        decimals = 4;
 
         _start = now;
         _ownerBalance = 1000000000 * uint256(10) ** decimals;
@@ -97,8 +97,19 @@ contract Token is Ownable {
         return now.sub(_start);
     }
 
-    function calc(uint256 amount, uint256 _delta) public view returns (uint256) {
-        return amount.mul(1 + rate * _delta);
+    function calc(uint256 amount, uint256 _days) public view returns (uint256) {
+        
+        // uint y = rate.div(365 * 24 * 60 * 60).mul(_delta);
+        // uint256 x = amount.mul(1 + y);
+
+        // return x;
+
+        //uint256 _rate = rate * 100;
+
+        uint256 t = 365 * uint256(10) ** decimals;
+        t = t.div(_days * uint256(10) ** decimals);
+        
+        return amount * (1 + t * rate);
     }
 
     function _getBalance(address who) private view returns(uint256) {
