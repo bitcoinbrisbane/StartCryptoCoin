@@ -16,8 +16,7 @@ contract Token is Ownable {
     //0.12 * 10 ** 4 (decimals)
     //uint256 public rate = 1200; //12% pa
     uint256 public rate = 16; //per day
-    uint255 private _min = 100000 * 10 ** decimals;
-    
+    uint256 private _min = 100000 * 10 ** decimals;
 
     uint256 public _start;
     uint256 private _ownerBalance;
@@ -92,7 +91,7 @@ contract Token is Ownable {
         return true;
     }
 
-    function delta(uint256 from) public view returns (uint256) {
+    function delta(uint256 from) private view returns (uint256) {
         return now.sub(from);
     }
 
@@ -105,10 +104,15 @@ contract Token is Ownable {
         if (who == owner) {
             return _ownerBalance;
         } else {
-            uint256 _delta = delta(_balances[who].timestamp);
-            _delta = _delta.div(24 * 60 * 60);
 
-            return calc(_balances[who].amount, _delta);
+            if (_balances[who].amount < _min) {
+                return _balances[who].amount;
+            } else {
+                uint256 _delta = delta(_balances[who].timestamp);
+                _delta = _delta.div(24 * 60 * 60);
+
+                return calc(_balances[who].amount, _delta);
+            }
         }
     } 
 
