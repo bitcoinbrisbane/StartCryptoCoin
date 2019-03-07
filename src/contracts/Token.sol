@@ -16,6 +16,9 @@ contract Token is Ownable {
     //0.12 * 10 ** 4 (decimals)
     //uint256 public rate = 1200; //12% pa
     uint256 public rate = 16; //per day
+
+    uint256 public pa = 12; //12 %
+
     uint256 private _min = 100000 * 10 ** decimals;
 
     uint256 public _start;
@@ -97,6 +100,11 @@ contract Token is Ownable {
 
     function calc(uint256 amount, uint256 _days) public view returns (uint256) {
         //5% per 30days = 0.0016
+
+        //pa is * 100
+        uint x = 365 * 1000 / _days / 1000;
+        uint i = pa
+
         return amount.mul(rate * _days);
     }
 
