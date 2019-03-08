@@ -26,6 +26,19 @@ contract.only("Token", function(accounts) {
       assert.equal(actual, 10000, "Delta should be 10000");
     });
 
+    it.only("Should get delta", async function () {
+      //const start = await tokenInstance._start();
+      //console.log(Number(start));
+
+      //await helper.advanceTime(10000);
+
+      const actual = await tokenInstance.delta(10000, 20000);
+      console.log(Number(actual));
+      console.log(actual);
+
+      assert.equal(actual, 10000, "Delta should be 10000");
+    });
+
     it("Should calc 0 interest", async function () {
       const start = await tokenInstance._start();
       console.log(Number(start));
@@ -36,7 +49,14 @@ contract.only("Token", function(accounts) {
       assert.equal(actual.valueOf(), 0, "Should be 0");
     });
 
-    it.only("Should calc balance", async function () {
+    it.only("Should calc balance x", async function () {
+      const actual = await tokenInstance.calc(10000, 365);
+      console.log(Number(actual));
+
+      assert.equal(Number(actual), 1200, "Should be 1200");
+    });
+
+    it("Should calc balance", async function () {
       await tokenInstance.transfer(BOB, 10000000);
 
       await helper.advanceTime(30 * 24 * 60 * 60);
@@ -47,7 +67,7 @@ contract.only("Token", function(accounts) {
       assert.equal(Number(actual), 4800000000, "Should be 4800000000");
     });
 
-    it.only("Should calc rate 2", async function () {
+    it("Should calc rate 2", async function () {
       // await tokenInstance.transfer(BOB, 100000000000000);
       // let actual = await tokenInstance.balanceOf(OWNER);
 
