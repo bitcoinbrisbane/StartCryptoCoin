@@ -6,9 +6,9 @@ import "./SafeMath.sol";
 contract Token is Ownable {
     using SafeMath for uint;
 
-    string public name;
-    string public symbol;
-    uint8 public decimals;
+    string public name = "StartCryptoCoin";
+    string public symbol = "SCC";
+    uint8 public decimals = 4;
 
     mapping (address => Balance) _balances;
     mapping (address => mapping (address => uint256)) allowed;
@@ -16,6 +16,10 @@ contract Token is Ownable {
     //0.12 * 10 ** 4 (decimals)
     uint256 public pa = 1200; //12% pa
     uint256 public rate = 16; //per day
+
+    uint256 public pa = 12; //12 %
+
+    uint256 private _min = 100000 * 10 ** decimals;
 
     uint256 public _start;
     uint256 private _ownerBalance;
@@ -32,10 +36,6 @@ contract Token is Ownable {
     }
 
     constructor () public {
-        symbol = "SCC";
-        name = "StartCryptoCoin";
-        decimals = 4;
-
         _start = now;
         _ownerBalance = 1000000000 * uint256(10) ** decimals;
     }
