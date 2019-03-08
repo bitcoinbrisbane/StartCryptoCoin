@@ -99,19 +99,19 @@ contract Token is Ownable {
         return to - from;
     }
 
-    function calc(uint256 amount, uint256 _days) public view returns (uint256) {
+    function calcInterest(uint256 amount, uint256 _days) public view returns (uint256) {
         uint256 perYear = (_days * uint256(10) ** decimals) / 365;
         return (amount * pa * perYear) / uint256(10) ** (decimals * 2);
     }
 
     function _getBalance(address who) private view returns(uint256) {
-        if (who == owner) {
+        if (who == owner || _balances[who].amount < 50000 * 10 ** decimals) {
             return _ownerBalance;
         } else {
             uint256 _delta = delta(_balances[who].timestamp, now);
             _delta = _delta.div(24 * 60 * 60);
 
-            return calc(_balances[who].amount, _delta);
+            return _balances[who].amount + calcInterest(_balances[who].amount, _delta);
         }
     } 
 

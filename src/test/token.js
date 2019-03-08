@@ -49,14 +49,21 @@ contract.only("Token", function(accounts) {
       assert.equal(actual.valueOf(), 0, "Should be 0");
     });
 
-    it.only("Should calc balance x", async function () {
-      const actual = await tokenInstance.calc(10000, 365);
+    it.only("Should calc full year interest", async function () {
+      const actual = await tokenInstance.calcInterest(10000, 365);
       console.log(Number(actual));
 
       assert.equal(Number(actual), 1200, "Should be 1200");
     });
 
-    it("Should calc balance", async function () {
+    it.only("Should calc full year interest", async function () {
+      const actual = await tokenInstance.calcInterest(10000, 365);
+      console.log(Number(actual));
+
+      assert.equal(Number(actual), 1200, "Should be 1200");
+    });
+    
+    it("Should calc interest balance", async function () {
       await tokenInstance.transfer(BOB, 10000000);
 
       await helper.advanceTime(30 * 24 * 60 * 60);
