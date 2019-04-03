@@ -6,18 +6,16 @@ import "./SafeMath.sol";
 contract Token is Ownable {
     using SafeMath for uint;
 
-    string public name = "StartCryptoCoin";
-    string public symbol = "SCC";
+    string public name = "Virtual Token";
+    string public symbol = "VITO";
     uint8 public decimals = 4;
 
     mapping (address => Balance) _balances;
     mapping (address => mapping (address => uint256)) allowed;
 
-    //0.12 * 10 ** 4 (decimals)
-    uint256 public pa = 1200; //12% pa
+    //0.6 * 10 ** 4 (decimals)
+    uint256 public pa = 600; //6% pa
     uint256 public rate = 16; //per day
-
-    uint256 public pa = 12; //12 %
 
     uint256 private _min = 100000 * 10 ** decimals;
 
