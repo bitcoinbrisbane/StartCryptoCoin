@@ -16,3 +16,7 @@ Name   | Virtual Token
 Ticker | VITO
 Total Supply | 1,000,000,000
 Decimals | 18
+
+## Test accounts
+
+`0xeA241A65023Ba64AEDF47a22b08353a1014Ce56c`
