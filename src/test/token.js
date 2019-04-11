@@ -1,5 +1,5 @@
 const Token = artifacts.require("Token");
-const helper = require("./helpers/truffleTestHelper");
+//const helper = require("./helpers/truffleTestHelper");
 
 contract.only("Token", function(accounts) {
   const OWNER = accounts[0];
@@ -12,105 +12,105 @@ contract.only("Token", function(accounts) {
     tokenInstance = await Token.new();
   });
 
-  describe("Interest tests", () => {
-    it.skip("Should get delta", async function () {
-      //const start = await tokenInstance._start();
-      //console.log(Number(start));
+  // describe("Interest tests", () => {
+  //   it.skip("Should get delta", async function () {
+  //     //const start = await tokenInstance._start();
+  //     //console.log(Number(start));
 
-      //await helper.advanceTime(10000);
+  //     //await helper.advanceTime(10000);
 
-      const actual = await tokenInstance.delta(10000);
-      console.log(Number(actual));
-      console.log(actual);
+  //     const actual = await tokenInstance.delta(10000);
+  //     console.log(Number(actual));
+  //     console.log(actual);
 
-      assert.equal(actual, 10000, "Delta should be 10000");
-    });
+  //     assert.equal(actual, 10000, "Delta should be 10000");
+  //   });
 
-    it.only("Should get delta", async function () {
-      //const start = await tokenInstance._start();
-      //console.log(Number(start));
+  //   it.only("Should get delta", async function () {
+  //     //const start = await tokenInstance._start();
+  //     //console.log(Number(start));
 
-      //await helper.advanceTime(10000);
+  //     //await helper.advanceTime(10000);
 
-      const actual = await tokenInstance.delta(10000, 20000);
-      console.log(Number(actual));
-      console.log(actual);
+  //     const actual = await tokenInstance.delta(10000, 20000);
+  //     console.log(Number(actual));
+  //     console.log(actual);
 
-      assert.equal(actual, 10000, "Delta should be 10000");
-    });
+  //     assert.equal(actual, 10000, "Delta should be 10000");
+  //   });
 
-    it("Should calc 0 interest", async function () {
-      const start = await tokenInstance._start();
-      console.log(Number(start));
+  //   it("Should calc 0 interest", async function () {
+  //     const start = await tokenInstance._start();
+  //     console.log(Number(start));
 
-      const actual = await tokenInstance.calc(100, 0);
-      console.log(Number(actual));
+  //     const actual = await tokenInstance.calc(100, 0);
+  //     console.log(Number(actual));
 
-      assert.equal(actual.valueOf(), 0, "Should be 0");
-    });
+  //     assert.equal(actual.valueOf(), 0, "Should be 0");
+  //   });
 
-    it.only("Should calc full year interest", async function () {
-      const actual = await tokenInstance.calcInterest(10000, 365);
-      console.log(Number(actual));
+  //   it.only("Should calc full year interest", async function () {
+  //     const actual = await tokenInstance.calcInterest(10000, 365);
+  //     console.log(Number(actual));
 
-      assert.equal(Number(actual), 1200, "Should be 1200");
-    });
+  //     assert.equal(Number(actual), 1200, "Should be 1200");
+  //   });
 
-    it.only("Should calc full year interest", async function () {
-      const actual = await tokenInstance.calcInterest(10000, 365);
-      console.log(Number(actual));
+  //   it.only("Should calc full year interest", async function () {
+  //     const actual = await tokenInstance.calcInterest(10000, 365);
+  //     console.log(Number(actual));
 
-      assert.equal(Number(actual), 1200, "Should be 1200");
-    });
+  //     assert.equal(Number(actual), 1200, "Should be 1200");
+  //   });
     
-    it("Should calc interest balance", async function () {
-      await tokenInstance.transfer(BOB, 10000000);
+  //   it("Should calc interest balance", async function () {
+  //     await tokenInstance.transfer(BOB, 10000000);
 
-      await helper.advanceTime(30 * 24 * 60 * 60);
+  //     await helper.advanceTime(30 * 24 * 60 * 60);
 
-      const actual = await tokenInstance.balanceOf(BOB);
-      console.log(Number(actual));
+  //     const actual = await tokenInstance.balanceOf(BOB);
+  //     console.log(Number(actual));
 
-      assert.equal(Number(actual), 4800000000, "Should be 4800000000");
-    });
+  //     assert.equal(Number(actual), 4800000000, "Should be 4800000000");
+  //   });
 
-    it("Should calc rate 2", async function () {
-      // await tokenInstance.transfer(BOB, 100000000000000);
-      // let actual = await tokenInstance.balanceOf(OWNER);
+  //   it("Should calc rate 2", async function () {
+  //     // await tokenInstance.transfer(BOB, 100000000000000);
+  //     // let actual = await tokenInstance.balanceOf(OWNER);
 
-      // actual = await tokenInstance.balanceOf(BOB);
-      // assert.equal(Number(actual), 100000000000000, "Bob balance should be 10,000 tokens");
+  //     // actual = await tokenInstance.balanceOf(BOB);
+  //     // assert.equal(Number(actual), 100000000000000, "Bob balance should be 10,000 tokens");
 
-      //await helper.advanceTime(1);
+  //     //await helper.advanceTime(1);
 
-      //1000 tokens
-      const amount = 10000000;
+  //     //1000 tokens
+  //     const amount = 10000000;
 
-      actual = await tokenInstance.calc(amount, 30);
-      console.log(Number(actual));
+  //     actual = await tokenInstance.calc(amount, 30);
+  //     console.log(Number(actual));
 
-      //1300 tokens
-      assert.equal(Number(actual), 4800000000, "Should be 1120 tokens");
-    });
+  //     //1300 tokens
+  //     assert.equal(Number(actual), 4800000000, "Should be 1120 tokens");
+  //   });
 
-    it("Should not have any interest", async function () {
-      const start = await tokenInstance._start();
-      console.log(Number(start));
+  //   it("Should not have any interest", async function () {
+  //     const start = await tokenInstance._start();
+  //     console.log(Number(start));
 
-      const actual = await tokenInstance.calc(100, start);
-      console.log(Number(actual));
+  //     const actual = await tokenInstance.calc(100, start);
+  //     console.log(Number(actual));
 
-      assert.equal(actual.valueOf(), 100, "Should still be 100");
-    });
-  });
+  //     assert.equal(actual.valueOf(), 100, "Should still be 100");
+  //   });
+  // });
 
   describe("ERC20 tests", () => {
     it("Should test ERC20 public properties", async function () {
       const name = await tokenInstance.name();
-      assert.equal(name, "StartCryptoCoin", "Name should be StartCryptoCoin");
+      assert.equal(name, "Virtual Token", "Name should be Virtual Token");
 
       const symbol = await tokenInstance.symbol();
-      assert.equal(symbol, "SCC", "Symbol should be SCC");
+      assert.equal(symbol, "VITO", "Symbol should be VITO");
     });
 
     it("Total supply should be 10000000000000", async function () {

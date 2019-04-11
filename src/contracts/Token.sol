@@ -29,7 +29,7 @@ contract Token is Ownable {
     }
 
     function totalSupply() public view returns(uint256) {
-        uint256 accruedTotal = calc(_nonOwners, _start);
+        uint256 accruedTotal = calcInterest(_nonOwners, _start);
         return _ownerBalance.add(accruedTotal);
     }
 
