@@ -9,6 +9,7 @@ contract Token is Ownable {
     string public name = "Virtual Token";
     string public symbol = "VITO";
     uint8 public decimals = 4;
+    uint256 public totalSupply = 10000000000000;
 
     mapping (address => Balance) _balances;
     mapping (address => mapping (address => uint256)) allowed;
@@ -21,21 +22,22 @@ contract Token is Ownable {
 
     uint256 public _start;
     uint256 private _ownerBalance;
-    uint256 private _nonOwners;
+    
+    ///uint256 private _nonOwners;
 
     struct Balance {
         uint256 timestamp;
         uint256 amount;
     }
 
-    function totalSupply() public view returns(uint256) {
-        uint256 accruedTotal = calcInterest(_nonOwners, _start);
-        return _ownerBalance.add(accruedTotal);
-    }
+    // function totalSupply() public view returns(uint256) {
+    //     uint256 accruedTotal = calcInterest(_nonOwners, _start);
+    //     return _ownerBalance.add(accruedTotal);
+    // }
 
     constructor () public {
         _start = now;
-        _ownerBalance = 1000000000 * uint256(10) ** decimals;
+        _ownerBalance = totalSupply;
     }
 
     function balanceOf(address who) public view returns (uint256) {
