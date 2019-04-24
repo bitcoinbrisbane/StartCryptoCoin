@@ -12,19 +12,20 @@ contract.only("Token", function(accounts) {
     tokenInstance = await Token.new();
   });
 
-  // describe("Interest tests", () => {
-  //   it.skip("Should get delta", async function () {
-  //     //const start = await tokenInstance._start();
-  //     //console.log(Number(start));
+  describe("Interest tests", () => {
+    it.skip("Should get delta", async function () {
+      //const start = await tokenInstance._start();
+      //console.log(Number(start));
 
-  //     //await helper.advanceTime(10000);
+      //await helper.advanceTime(10000);
 
-  //     const actual = await tokenInstance.delta(10000);
-  //     console.log(Number(actual));
-  //     console.log(actual);
+      const actual = await tokenInstance.delta(10000);
+      console.log(Number(actual));
+      console.log(actual);
 
-  //     assert.equal(actual, 10000, "Delta should be 10000");
-  //   });
+      assert.equal(actual, 10000, "Delta should be 10000");
+    });
+  });
 
   //   it.only("Should get delta", async function () {
   //     //const start = await tokenInstance._start();
@@ -121,6 +122,12 @@ contract.only("Token", function(accounts) {
     it("Owner balance should be 10000000000000", async function () {
       const actual = await tokenInstance.balanceOf(OWNER);
       assert.equal(actual.valueOf(), 10000000000000, "Balance should be 10000000000000");
+    });
+
+    it.only("Should transfer to alice", async function () {
+      await tokenInstance.transfer(ALICE, 200, {from: OWNER});
+      const actual = await tokenInstance.balanceOf(ALICE);
+      assert.equal(Number(actual), 200, "Balance should be 200");
     });
     
     it.skip("Owner balance should be greater than 10000000000000", async function () {

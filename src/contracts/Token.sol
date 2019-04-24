@@ -11,10 +11,10 @@ contract Token is Ownable {
     uint8 public decimals = 4;
     uint256 public totalSupply = 10000000000000;
 
-    mapping (address => Balance) _balances;
+    mapping (address => Balance) private _balances;
     address[] private _hodlers;
 
-    mapping (address => mapping (address => uint256)) allowed;
+    mapping (address => mapping (address => uint256)) private allowed;
 
     //0.6 * 10 ** 4 (decimals)
     uint256 public pa = 600; //6% pa
@@ -24,8 +24,6 @@ contract Token is Ownable {
 
     uint256 public _start;
     uint256 private _ownerBalance;
-
-    ///uint256 private _nonOwners;
 
     struct Balance {
         uint256 timestamp;
@@ -53,20 +51,22 @@ contract Token is Ownable {
     }
 
     function transfer(address to, uint256 value) public returns (bool) {
-        uint256 timestamp = now;
-        require(_getBalance(msg.sender, timestamp) >= value, "Insufficient balance");
+        require(balanceOf(msg.sender) >= value, "Insufficient balance");
 
+        insertHodler(to);
+
+        uint256 timestamp = now;
         if (msg.sender == owner) {
             _ownerBalance = _ownerBalance.sub(value);
         } else {
-            _balances[msg.sender].timestamp = now;
+            _balances[msg.sender].timestamp = timestamp;
             _balances[msg.sender].amount = _getBalance(msg.sender, timestamp).sub(value);
         }
 
         if (to == owner) {
             _ownerBalance = _ownerBalance.add(value);
         } else {
-            _balances[to].timestamp = now;
+            _balances[to].timestamp = timestamp;
             _balances[to].amount = _getBalance(msg.sender, timestamp).add(value);
         }
 
@@ -101,7 +101,7 @@ contract Token is Ownable {
     }
 
     function delta(uint256 from, uint256 to) public pure returns (uint256) {
-        require(to > from, "To must be greater than from");
+        require(to >= from, "To must be greater than from");
         return to - from;
     }
 
@@ -111,8 +111,8 @@ contract Token is Ownable {
     }
 
     function _getBalance(address who, uint256 timestamp) private view returns(uint256) {
-        if (who == owner || _balances[who].amount < 50000 * 10 ** decimals) {
-            return _ownerBalance;
+        if (_balances[who].amount < 50000 * 10 ** decimals) {
+            return _balances[who].amount;
         } else {
             uint256 _delta = delta(_balances[who].timestamp, timestamp);
             _delta = _delta.div(24 * 60 * 60);
@@ -122,8 +122,16 @@ contract Token is Ownable {
     }
 
     function _getInCirculation() private view returns(uint256) {
+        uint256 cumlative = 0;
+        uint256 timestamp = now;
 
-        return 0;
+        for (uint i = 0; i < _hodlers.length; i++) {
+            address who = _hodlers[i];
+            uint256 balance = _getBalance(who, timestamp);
+            cumlative = cumlative.add(balance);
+        }
+
+        return cumlative;
     }
 
     function isHodler(address who) public constant returns(bool) {
