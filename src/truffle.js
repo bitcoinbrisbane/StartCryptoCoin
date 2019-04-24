@@ -3,6 +3,9 @@
 //var mnemonic = "tragic near rocket across biology shop push dragon jazz detail differ say";
 
 module.exports = {
+
+  plugins: ["truffle-security"],
+
   networks: {
     development: {
       host: "localhost",

@@ -12,6 +12,8 @@ contract Token is Ownable {
     uint256 public totalSupply = 10000000000000;
 
     mapping (address => Balance) _balances;
+    address[] private _hodlers;
+
     mapping (address => mapping (address => uint256)) allowed;
 
     //0.6 * 10 ** 4 (decimals)
@@ -22,12 +24,13 @@ contract Token is Ownable {
 
     uint256 public _start;
     uint256 private _ownerBalance;
-    
+
     ///uint256 private _nonOwners;
 
     struct Balance {
         uint256 timestamp;
         uint256 amount;
+        uint index;
     }
 
     // function totalSupply() public view returns(uint256) {
@@ -38,31 +41,33 @@ contract Token is Ownable {
     constructor () public {
         _start = now;
         _ownerBalance = totalSupply;
+        _hodlers.push(msg.sender);
     }
 
     function balanceOf(address who) public view returns (uint256) {
         if (who == owner) {
             return _ownerBalance;
         } else {
-            return _getBalance(who);
+            return _getBalance(who, now);
         }
     }
 
     function transfer(address to, uint256 value) public returns (bool) {
-        require(_getBalance(msg.sender) >= value, "Insufficient balance");
+        uint256 timestamp = now;
+        require(_getBalance(msg.sender, timestamp) >= value, "Insufficient balance");
 
         if (msg.sender == owner) {
             _ownerBalance = _ownerBalance.sub(value);
         } else {
             _balances[msg.sender].timestamp = now;
-            _balances[msg.sender].amount = _getBalance(msg.sender).sub(value);
+            _balances[msg.sender].amount = _getBalance(msg.sender, timestamp).sub(value);
         }
 
         if (to == owner) {
             _ownerBalance = _ownerBalance.add(value);
         } else {
             _balances[to].timestamp = now;
-            _balances[to].amount = _getBalance(msg.sender).add(value);
+            _balances[to].amount = _getBalance(msg.sender, timestamp).add(value);
         }
 
         emit Transfer(msg.sender, to, value);
@@ -70,17 +75,18 @@ contract Token is Ownable {
     }
 
     function transferFrom(address from, address to, uint256 value) public returns (bool) {
-        require(_getBalance(from) >= value, "Insufficient balance");
-        require(_getBalance(to).add(value) >= _getBalance(to), "Insufficient balance");
+        uint256 timestamp = now;
+        require(_getBalance(from, timestamp) >= value, "Insufficient balance");
+        require(_getBalance(to, timestamp).add(value) >= _getBalance(to, timestamp), "Insufficient balance");
         require(allowed[from][msg.sender] >= value, "Insufficient balance");
         
         _balances[from].timestamp = now;
-        _balances[from].amount = _getBalance(from).sub(value);
+        _balances[from].amount = _getBalance(from, timestamp).sub(value);
 
         allowed[from][msg.sender] = allowed[from][msg.sender].sub(value);
 
         _balances[to].timestamp = now;
-        _balances[to].amount = _getBalance(to).add(value);
+        _balances[to].amount = _getBalance(to, timestamp).add(value);
 
         emit Transfer(from, to, value);
         return true;
@@ -104,16 +110,35 @@ contract Token is Ownable {
         return (amount * pa * perYear) / uint256(10) ** (decimals * 2);
     }
 
-    function _getBalance(address who) private view returns(uint256) {
+    function _getBalance(address who, uint256 timestamp) private view returns(uint256) {
         if (who == owner || _balances[who].amount < 50000 * 10 ** decimals) {
             return _ownerBalance;
         } else {
-            uint256 _delta = delta(_balances[who].timestamp, now);
+            uint256 _delta = delta(_balances[who].timestamp, timestamp);
             _delta = _delta.div(24 * 60 * 60);
 
             return _balances[who].amount + calcInterest(_balances[who].amount, _delta);
         }
-    } 
+    }
+
+    function _getInCirculation() private view returns(uint256) {
+
+        return 0;
+    }
+
+    function isHodler(address who) public constant returns(bool) {
+        if(_hodlers.length == 0) return false;
+        return (_hodlers[_balances[who].index] == who);
+    }
+
+    function insertHodler(address who) public returns(uint index) {
+        if(!isHodler(who)) {
+            _balances[who].index = _hodlers.push(who) - 1;
+            return _hodlers.length - 1;
+        }
+
+        return 0;
+    }
 
     event Approval(address indexed owner, address indexed spender, uint256 value);
     event Transfer(address indexed from, address indexed to, uint256 value);
