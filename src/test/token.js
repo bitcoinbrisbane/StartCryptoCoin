@@ -114,20 +114,39 @@ contract.only("Token", function(accounts) {
       assert.equal(symbol, "VITO", "Symbol should be VITO");
     });
 
-    it("Total supply should be 10000000000000", async function () {
+    it.only("Total supply should be 10000000000000", async function () {
       const actual = await tokenInstance.totalSupply();
       assert.equal(Number(actual), Number(10000000000000), "Total supply should be 10000000000000");
     });
 
-    it("Owner balance should be 10000000000000", async function () {
+    it.only("Owner balance should be 10000000000000", async function () {
       const actual = await tokenInstance.balanceOf(OWNER);
       assert.equal(actual.valueOf(), 10000000000000, "Balance should be 10000000000000");
     });
 
-    it.only("Should transfer to alice", async function () {
+    it("Should transfer 200 tokens to alice", async function () {
       await tokenInstance.transfer(ALICE, 200, {from: OWNER});
       const actual = await tokenInstance.balanceOf(ALICE);
       assert.equal(Number(actual), 200, "Balance should be 200");
+    });
+
+    it("Should transfer 500000000 tokens to alice", async function () {
+      await tokenInstance.transfer(ALICE, 500000000, {from: OWNER});
+      const actual = await tokenInstance.balanceOf(ALICE);
+      assert.equal(Number(actual), 500000000, "Balance should be 500000000");
+    });
+
+    it("Should transfer 600000000 tokens to alice", async function () {
+      await tokenInstance.transfer(ALICE, 600000000, {from: OWNER});
+      const actual = await tokenInstance.balanceOf(ALICE);
+      assert.equal(Number(actual), 600000000, "Balance should be 600000000");
+    });
+
+    it.skip("Should get total in curculation", async function () {
+      await tokenInstance.transfer(ALICE, 600000000, {from: OWNER});
+      const actual = await tokenInstance._getInCirculation();
+
+      assert.equal(Number(actual), 10000000000000, "Total should be 10000000000000");
     });
     
     it.skip("Owner balance should be greater than 10000000000000", async function () {

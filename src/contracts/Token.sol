@@ -20,10 +20,10 @@ contract Token is Ownable {
     uint256 public pa = 600; //6% pa
     uint256 public rate = 16; //per day
 
-    uint256 private _min = 100000 * 10 ** decimals;
+    uint256 private _min = 50000 * 10 ** decimals;
 
     uint256 public _start;
-    uint256 private _ownerBalance;
+    //uint256 private _ownerBalance;
 
     struct Balance {
         uint256 timestamp;
@@ -38,13 +38,13 @@ contract Token is Ownable {
 
     constructor () public {
         _start = now;
-        _ownerBalance = totalSupply;
-        _hodlers.push(msg.sender);
+        insertHodler(msg.sender);
     }
 
     function balanceOf(address who) public view returns (uint256) {
         if (who == owner) {
-            return _ownerBalance;
+            uint256 incirculation = _getInCirculation();
+            return totalSupply.sub(incirculation);
         } else {
             return _getBalance(who, now);
         }
@@ -57,14 +57,14 @@ contract Token is Ownable {
 
         uint256 timestamp = now;
         if (msg.sender == owner) {
-            _ownerBalance = _ownerBalance.sub(value);
+            _balances[owner].amount = _balances[owner].amount.sub(value);
         } else {
             _balances[msg.sender].timestamp = timestamp;
             _balances[msg.sender].amount = _getBalance(msg.sender, timestamp).sub(value);
         }
 
         if (to == owner) {
-            _ownerBalance = _ownerBalance.add(value);
+            _balances[owner].amount = _balances[owner].amount.add(value);
         } else {
             _balances[to].timestamp = timestamp;
             _balances[to].amount = _getBalance(msg.sender, timestamp).add(value);
@@ -111,7 +111,7 @@ contract Token is Ownable {
     }
 
     function _getBalance(address who, uint256 timestamp) private view returns(uint256) {
-        if (_balances[who].amount < 50000 * 10 ** decimals) {
+        if (_balances[who].amount < _min) {
             return _balances[who].amount;
         } else {
             uint256 _delta = delta(_balances[who].timestamp, timestamp);
@@ -121,7 +121,7 @@ contract Token is Ownable {
         }
     }
 
-    function _getInCirculation() private view returns(uint256) {
+    function _getInCirculation() public view returns(uint256) {
         uint256 cumlative = 0;
         uint256 timestamp = now;
 
@@ -134,7 +134,7 @@ contract Token is Ownable {
         return cumlative;
     }
 
-    function isHodler(address who) public constant returns(bool) {
+    function isHodler(address who) public view returns(bool) {
         if(_hodlers.length == 0) return false;
         return (_hodlers[_balances[who].index] == who);
     }
