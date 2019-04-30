@@ -124,7 +124,7 @@ contract.only("Token", function(accounts) {
       assert.equal(actual.valueOf(), 10000000000000, "Balance should be 10000000000000");
     });
 
-    it("Should transfer 200 tokens to alice", async function () {
+    it.only("Should transfer 200 tokens to alice", async function () {
       await tokenInstance.transfer(ALICE, 200, {from: OWNER});
       const actual = await tokenInstance.balanceOf(ALICE);
       assert.equal(Number(actual), 200, "Balance should be 200");
@@ -142,16 +142,21 @@ contract.only("Token", function(accounts) {
       assert.equal(Number(actual), 600000000, "Balance should be 600000000");
     });
 
-    it.skip("Should get total in curculation", async function () {
+    it.only("Should get total in curculation of zero as owners balance is not included", async function () {
+      const actual = await tokenInstance._getInCirculation();
+      assert.equal(Number(actual), 0, "In circulation should be 0");
+    });
+
+    it("Should get total in curculation", async function () {
       await tokenInstance.transfer(ALICE, 600000000, {from: OWNER});
       const actual = await tokenInstance._getInCirculation();
 
-      assert.equal(Number(actual), 10000000000000, "Total should be 10000000000000");
+      assert.equal(Number(actual), 600000000, "Total should be 600000000");
     });
     
-    it.skip("Owner balance should be greater than 10000000000000", async function () {
+    it.skip("Owner balance should be 10000000000000", async function () {
       const actual = await tokenInstance.delta();
-      assert.equal(actual.valueOf(), 10000000000000, "Balance should be greater than 10000000000000");
+      assert.equal(Number(actual), 10000000000000, "Balance should be 10000000000000");
     });
   });
 });

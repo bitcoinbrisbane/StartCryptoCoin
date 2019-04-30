@@ -31,14 +31,12 @@ contract Token is Ownable {
         uint index;
     }
 
-    // function totalSupply() public view returns(uint256) {
-    //     uint256 accruedTotal = calcInterest(_nonOwners, _start);
-    //     return _ownerBalance.add(accruedTotal);
-    // }
-
     constructor () public {
         _start = now;
         insertHodler(msg.sender);
+
+        _balances[msg.sender].timestamp = _start;
+        _balances[msg.sender].amount = totalSupply;
     }
 
     function balanceOf(address who) public view returns (uint256) {
@@ -76,6 +74,7 @@ contract Token is Ownable {
 
     function transferFrom(address from, address to, uint256 value) public returns (bool) {
         uint256 timestamp = now;
+
         require(_getBalance(from, timestamp) >= value, "Insufficient balance");
         require(_getBalance(to, timestamp).add(value) >= _getBalance(to, timestamp), "Insufficient balance");
         require(allowed[from][msg.sender] >= value, "Insufficient balance");
@@ -125,10 +124,13 @@ contract Token is Ownable {
         uint256 cumlative = 0;
         uint256 timestamp = now;
 
-        for (uint i = 0; i < _hodlers.length; i++) {
+        for (uint256 i = 0; i < _hodlers.length; i++) {
             address who = _hodlers[i];
-            uint256 balance = _getBalance(who, timestamp);
-            cumlative = cumlative.add(balance);
+
+            if (who != owner) {
+                uint256 balance = _getBalance(who, timestamp);
+                cumlative = cumlative.add(balance);
+            }
         }
 
         return cumlative;
