@@ -106,7 +106,7 @@ contract.only("Token", function(accounts) {
   // });
 
   describe("ERC20 tests", () => {
-    it("Should test ERC20 public properties", async function () {
+    it.only("Should test ERC20 public properties", async function () {
       const name = await tokenInstance.name();
       assert.equal(name, "Virtual Token", "Name should be Virtual Token");
 
@@ -130,13 +130,13 @@ contract.only("Token", function(accounts) {
       assert.equal(Number(actual), 200, "Balance should be 200");
     });
 
-    it("Should transfer 500000000 tokens to alice", async function () {
+    it.only("Should transfer 500000000 tokens to alice", async function () {
       await tokenInstance.transfer(ALICE, 500000000, {from: OWNER});
       const actual = await tokenInstance.balanceOf(ALICE);
       assert.equal(Number(actual), 500000000, "Balance should be 500000000");
     });
 
-    it("Should transfer 600000000 tokens to alice", async function () {
+    it.only("Should transfer 600000000 tokens to alice", async function () {
       await tokenInstance.transfer(ALICE, 600000000, {from: OWNER});
       const actual = await tokenInstance.balanceOf(ALICE);
       assert.equal(Number(actual), 600000000, "Balance should be 600000000");

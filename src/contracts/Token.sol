@@ -23,7 +23,6 @@ contract Token is Ownable {
     uint256 private _min = 50000 * 10 ** decimals;
 
     uint256 public _start;
-    //uint256 private _ownerBalance;
 
     struct Balance {
         uint256 timestamp;
@@ -65,7 +64,7 @@ contract Token is Ownable {
             _balances[owner].amount = _balances[owner].amount.add(value);
         } else {
             _balances[to].timestamp = timestamp;
-            _balances[to].amount = _getBalance(msg.sender, timestamp).add(value);
+            _balances[to].amount = _getBalance(to, timestamp).add(value);
         }
 
         emit Transfer(msg.sender, to, value);
