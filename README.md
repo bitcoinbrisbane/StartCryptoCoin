@@ -19,4 +19,6 @@ Decimals | 18
 
 ## Test accounts
 
-`0xeA241A65023Ba64AEDF47a22b08353a1014Ce56c`
+`tragic near rocket across biology shop push dragon jazz detail differ say`
+
+Owner ``

@@ -147,7 +147,7 @@ contract.only("Token", function(accounts) {
       assert.equal(Number(actual), 0, "In circulation should be 0");
     });
 
-    it("Should get total in curculation", async function () {
+    it.only("Should get total in curculation", async function () {
       await tokenInstance.transfer(ALICE, 600000000, {from: OWNER});
       const actual = await tokenInstance._getInCirculation();
 
