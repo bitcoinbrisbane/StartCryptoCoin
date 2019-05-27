@@ -9,7 +9,7 @@ contract Token is Ownable {
     string public name = "Virtual Token";
     string public symbol = "VITO";
     uint8 public decimals = 4;
-    uint256 public totalSupply = 10000000000000;
+    uint256 public totalSupply = 100000000000000;
 
     mapping (address => Balance) private _balances;
     address[] private _hodlers;
